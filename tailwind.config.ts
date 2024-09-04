@@ -7,7 +7,17 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    colors: {
+      secondary: 'var(--secondary)',
+      grey: 'var(--grey)',
+      strokeColor: 'var(--stroke)',
+      textColor: 'var(--textColor)',
+    },
     extend: {
+      fontFamily: {
+        montserrat: ['var(--mont)']
+      },
+
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

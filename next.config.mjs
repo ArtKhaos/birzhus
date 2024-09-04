@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
 
-export default nextConfig;
+export default {
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'http://localhost:5001/api/:path*', // Замените на адрес вашего сервера
+            },
+        ];
+    },
+    images: {
+        domains: ['t.me'],
+    },
+};
