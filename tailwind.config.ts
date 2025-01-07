@@ -17,7 +17,9 @@ const config: Config = {
       fontFamily: {
         montserrat: ['var(--mont)']
       },
-
+      boxShadow: {
+        smallInput:'0 0 25px 0 rgba(0, 0, 0, 0.1)'
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

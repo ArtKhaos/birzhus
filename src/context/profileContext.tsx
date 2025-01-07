@@ -10,39 +10,49 @@ interface UserProfile {
 interface ProfileContextProps {
     user: UserProfile | null;
     setUser: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+    loading: boolean;
+    error: string | null;
 }
 
 const ProfileContext = createContext<ProfileContextProps | undefined>(undefined);
 
 export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const loadUserData = async () => {
-            if (user?.telegram_id) { // Используйте telegram_id вместо userId
-                try {
-                    const response = await fetch(`/api/user-data?userId=${user.telegram_id}`);
-                    if (response.ok) {
-                        const userData = await response.json();
-                        if (userData) {
-                            setUser(userData);
-                        } else {
-                            console.error('Пользователь не найден');
-                        }
-                    } else {
-                        console.error('Ошибка при загрузке данных пользователя');
-                    }
-                } catch (error) {
-                    console.error('Ошибка при загрузке данных пользователя:', error);
+        const fetchUserData = async () => {
+            const tg = (window as any).Telegram.WebApp;
+            if (!tg.initDataUnsafe?.user) {
+                setLoading(false);
+                setError('Не удалось получить данные пользователя Telegram');
+                return;
+            }
+
+            const telegramId = tg.initDataUnsafe.user.id;
+
+            try {
+                const response = await fetch(`/api/user?telegram_id=${telegramId}`);
+                if (response.ok) {
+                    const userData: UserProfile = await response.json();
+                    setUser(userData);
+                } else {
+                    setError('Ошибка при получении данных пользователя');
                 }
+            } catch (error) {
+                console.error('Ошибка при получении данных пользователя:', error);
+                setError('Произошла ошибка при загрузке данных пользователя');
+            } finally {
+                setLoading(false);
             }
         };
 
-        loadUserData();
-    }, [user?.telegram_id]); // Добавьте зависимость
+        fetchUserData();
+    }, []);
 
     return (
-        <ProfileContext.Provider value={{ user, setUser }}>
+        <ProfileContext.Provider value={{ user, setUser, loading, error }}>
             {children}
         </ProfileContext.Provider>
     );

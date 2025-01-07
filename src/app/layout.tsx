@@ -4,6 +4,7 @@ import "./globals.scss";
 import classNames from "classnames";
 import {ProfileProvider} from "@/context/profileContext";
 import NavBar from "@/components/nav/navBar";
+import Script from 'next/script';
 
 const montserrat = Montserrat({subsets: ["latin"], variable: '--mont'});
 
@@ -17,11 +18,10 @@ export default function RootLayout({
                                    }: Readonly<{
     children: React.ReactNode;
 }>) {
-
-
     return (
         <html lang="ru">
         <meta charSet="utf-8"/>
+        <Script src="/telegram-web-app.js" strategy="beforeInteractive" />
         <body className={classNames(montserrat.className, montserrat.variable)}>
         <ProfileProvider>
             <NavBar/>
